@@ -1,36 +1,21 @@
 config:
   lang: pt-BR
   title: Horários 2021.2
+  subtitle: Pedro Maciel Xavier
   logo: ./logo.png
+  logo-width: 8.0
+  seed: 0
+  bottom: 1.0
   
-seg-qua,qui:
+seg,qua-sex:
   12:00-13:00:
     Almoço
 
-seg:
-  13:30-15:30:
-    Cálculo
-  16:30-18:30:
-    Álgebra Linear
-    
 ter:
-  13:30-15:30:
-    Cálculo
-  16:30-18:30:
-    Álgebra Linear
-qua:
-  13:30-15:30:
-    Cálculo
-  16:30-18:30:
-    Álgebra Linear
+  11:00-12:00:
+    Almoço
+  12:00-15:00:
+    Arquitetura de Computadores
 qui:
-  13:30-15:30:
-    Cálculo
-  16:30-18:30:
-    Álgebra Linear
-sex:
-  13:30-15:30:
-    Cálculo
-  16:30-18:30:
-    Álgebra Linear
-  
+  13:00-15:00:
+    Arquitetura de Computadores

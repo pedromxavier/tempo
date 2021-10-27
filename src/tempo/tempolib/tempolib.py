@@ -1,5 +1,6 @@
 import pylatex
 from pathlib import Path
+import random
 
 WEEK_DAYS: int = 7
 DAY_HOURS: int = 24
@@ -102,6 +103,8 @@ class Schedule:
 
     def __init__(self, **params):
         self.__params_check(params)
+        self.__pallete = {}
+        self.__c = 0
 
         self.roots = [
             Event(i, i + 1, 0, 0, 0, 0, label=f"day{i}") for i in range(WEEK_DAYS)
@@ -110,13 +113,35 @@ class Schedule:
         for i in range(WEEK_DAYS):
             self.roots[i]._next = self.roots[(i + 1) % WEEK_DAYS]
 
+        self.PALLETE = self._PALLETE.copy()
+
     def __params_check(self, params: dict):
         self.params = {}
+
+        if "seed" in params:
+            self.params["seed"] = params["seed"]
+        else:
+            self.params["seed"] = None
 
         if "title" in params:
             self.params["title"] = params["title"]
         else:
-            self.params["title"] = 6
+            self.params["title"] = None
+
+        if "subtitle" in params:
+            self.params["subtitle"] = params["subtitle"]
+        else:
+            self.params["subtitle"] = None
+
+        if "logo" in params:
+            self.params["logo"] = params["logo"]
+        else:
+            self.params["logo"] = None
+
+        if "logo-width" in params:
+            self.params["logo-width"] = params["logo-width"]
+        else:
+            self.params["logo-width"] = None
 
         if "start" in params:
             self.params["start"] = params["start"]
@@ -204,7 +229,13 @@ class Schedule:
 
         return "\n".join(days)
 
-    def latex(self, fpath: Path):
+    def latex(self, fpath: Path, tex: bool = False):
+        if self.params["seed"] is not None:
+            random.seed(self.params["seed"])
+
+        self.PALLETE = self._PALLETE.copy()
+        random.shuffle(self.PALLETE)
+
         doc = pylatex.Document(
             documentclass="standalone", document_options=["tikz"]
         )
@@ -212,7 +243,25 @@ class Schedule:
         with doc.create(pylatex.TikZ()) as pic:
             self._grid(pic)
 
-        doc.generate_pdf(fpath, clean_tex=False)
+        doc.generate_pdf(fpath, clean_tex=not tex)
+
+    _PALLETE = [
+        "blue",
+        "red",
+        "yellow",
+        "orange",
+        "brown",
+        "violet"
+    ]
+
+    def _pallete(self):
+        self.__c += 1
+        return f"{self.PALLETE[self.__c % len(self.PALLETE)]}!30"
+
+    def pallete(self, label: str):
+        if label not in self.__pallete:
+            self.__pallete[label] = self._pallete()
+        return self.__pallete[label]
 
     def _grid(self, pic: pylatex.TikZ):
 
@@ -234,6 +283,24 @@ class Schedule:
             pic.append(pylatex.Command('Huge'))
             pic.append(pylatex.TikZNode(at=xy, text=self.params["title"]))
             pic.append(pylatex.Command('normalsize'))
+
+        if self.params["subtitle"] is not None:
+            xy = pylatex.TikZCoordinate(
+                0.5 * A4_W,
+                A4_H - 0.7 * t,
+            )
+            pic.append(pylatex.Command('Large'))
+            pic.append(pylatex.TikZNode(at=xy, text=self.params["subtitle"]))
+            pic.append(pylatex.Command('normalsize'))
+
+        if self.params["logo"] is not None:
+            lw = self.params["logo-width"]
+            xy = pylatex.TikZCoordinate(
+                w + 0.5 * lw,
+                A4_H - 0.5 * t,
+            )
+            tx = pylatex.Command("includegraphics", arguments=[self.params["logo"]], options=[f"width={lw:.2f}cm"])
+            pic.append(pylatex.TikZNode(at=xy, text=tx.dumps()))
 
         pic.append(pylatex.TikZDraw(["(0, 0)", "rectangle", f"({A4_W}, {A4_H})"]))
 
@@ -294,5 +361,25 @@ class Schedule:
         y = h + H
         pic.append(pylatex.TikZDraw([f"({x:.2f}, {y:.2f})", "--", f"({X:.2f}, {y:.2f})"]))
 
+        # -*- Place Events -*-
+        for root in self.roots:
+            while True:
+                if root.a != root.b:
+                    # -*- Draw Something -*-
+                    x = w + dx * (root.d + 1)
+                    X = w + dx * (root.D + 1)
+                    y = h + H - dy * ((root.h - S + root.m / HOUR_MINS) + 1)
+                    Y = h + H - dy * ((root.H - S + root.M / HOUR_MINS) + 1)
+                    fill = self.pallete(root.label)
+                    # opts = pylatex.TikZOptions(fill=fill)
+                    pic.append(pylatex.NoEscape(f"\\draw [text width={abs(X-x):.2f}cm, align=center, fill={fill}] ({x:.2f}, {y:.2f}) rectangle ({X:.2f}, {Y:.2f}) node[midway] {{{root.label}}};"))
+                    # xx = 0.5 * (x + X)
+                    # yy = 0.5 * (y + Y)
+                    # xy = pylatex.TikZCoordinate(xx, yy)
+                    # pic.append(pylatex.TikZNode(at=xy, text=root.label))
+                if root._down is not None:
+                    root = root._down
+                else:
+                    break
 
 __all__ = ["Schedule", "Event"]
