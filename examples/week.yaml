@@ -1,0 +1,36 @@
+config:
+  lang: pt-BR
+  title: Horários 2021.2
+  logo: ./logo.png
+  
+seg-qua,qui:
+  12:00-13:00:
+    Almoço
+
+seg:
+  13:30-15:30:
+    Cálculo
+  16:30-18:30:
+    Álgebra Linear
+    
+ter:
+  13:30-15:30:
+    Cálculo
+  16:30-18:30:
+    Álgebra Linear
+qua:
+  13:30-15:30:
+    Cálculo
+  16:30-18:30:
+    Álgebra Linear
+qui:
+  13:30-15:30:
+    Cálculo
+  16:30-18:30:
+    Álgebra Linear
+sex:
+  13:30-15:30:
+    Cálculo
+  16:30-18:30:
+    Álgebra Linear
+  

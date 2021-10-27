@@ -1,2 +1,3 @@
 # tempo
-Task scheduler (based on Python's schedule) with advanced features.
+
+General Time & Scheduling Python Library
