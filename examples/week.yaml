@@ -3,7 +3,7 @@ config:
   title: Horários 2021.2
   subtitle: Pedro Maciel Xavier
   logo: ./logo.png
-  logo-width: 8.0
+  logo-width: 3.0
   seed: 0
   bottom: 1.0
   
@@ -19,3 +19,7 @@ ter:
 qui:
   13:00-15:00:
     Arquitetura de Computadores
+
+qua,sex:
+  10:00-12:00:
+    Otimização Não Linear Inteira Mista

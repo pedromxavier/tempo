@@ -9,6 +9,7 @@ HOUR_MINS: int = 60
 A4_W: float = 29.7
 A4_H: float = 21.0
 
+
 class Event:
     def __init__(
         self, d: int, D: int, h: int, H: int, m: int, M: int, *, label: str = ...
@@ -90,7 +91,7 @@ class Schedule:
             "Sunday",
             "Monday",
             "Tuesday",
-            "Wednsday",
+            "Wednesday",
             "Thursday",
             "Friday",
             "Saturday",
@@ -161,22 +162,22 @@ class Schedule:
         if "left" in params:
             self.params["left"] = params["left"]
         else:
-            self.params["left"] = 2.0 #cm
+            self.params["left"] = 2.0  # cm
 
         if "right" in params:
             self.params["right"] = params["right"]
         else:
-            self.params["right"] = 2.0 #cm
+            self.params["right"] = 2.0  # cm
 
         if "top" in params:
             self.params["top"] = params["top"]
         else:
-            self.params["top"] = 4.0 #cm
+            self.params["top"] = 4.0  # cm
 
         if "bottom" in params:
             self.params["bottom"] = params["bottom"]
         else:
-            self.params["bottom"] = 2.0 #cm
+            self.params["bottom"] = 2.0  # cm
 
     def free(self, e: Event):
         for i in range(e.d, e.D):
@@ -239,7 +240,8 @@ class Schedule:
         doc = pylatex.Document(
             documentclass="standalone", document_options=["tikz"]
         )
-        doc.packages.append(pylatex.Package("firasans", options=["light", "sfdefault"]))
+        doc.packages.append(pylatex.Package(
+            "firasans", options=["light", "sfdefault"]))
         with doc.create(pylatex.TikZ()) as pic:
             self._grid(pic)
 
@@ -272,7 +274,7 @@ class Schedule:
 
         h = b  # cm
         w = l  # cm
-        W = A4_W - (l + r) # cm
+        W = A4_W - (l + r)  # cm
         H = A4_H - (t + b)  # cm
 
         if self.params["title"] is not None:
@@ -299,15 +301,17 @@ class Schedule:
                 w + 0.5 * lw,
                 A4_H - 0.5 * t,
             )
-            tx = pylatex.Command("includegraphics", arguments=[self.params["logo"]], options=[f"width={lw:.2f}cm"])
+            tx = pylatex.Command("includegraphics", arguments=[
+                                 self.params["logo"]], options=[f"width={lw:.2f}cm"])
             pic.append(pylatex.TikZNode(at=xy, text=tx.dumps()))
 
-        pic.append(pylatex.TikZDraw(["(0, 0)", "rectangle", f"({A4_W}, {A4_H})"]))
+        pic.append(pylatex.TikZDraw(
+            ["(0, 0)", "rectangle", f"({A4_W}, {A4_H})"]))
 
         M = WEEK_DAYS
         N = self.params["hours"]
         S = self.params["start"]
-        
+
         WEEK_MAP = self.WEEK_MAP[self.params['lang']]
 
         dx = (W / (M + 1))
@@ -318,24 +322,27 @@ class Schedule:
             x = w + i * dx
             y = h + H
             Y = h
-            pic.append(pylatex.TikZDraw([f"({x:.2f}, {y:.2f})", "--", f"({x:.2f}, {Y:.2f})"]))
+            pic.append(pylatex.TikZDraw(
+                [f"({x:.2f}, {y:.2f})", "--", f"({x:.2f}, {Y:.2f})"]))
 
             xx = x + 0.5 * dx
             yy = y - 0.5 * dy
             xy = pylatex.TikZCoordinate(round(xx, 2), round(yy, 2))
             pic.append(pylatex.TikZNode(at=xy, text=WEEK_MAP[i-1]))
 
-        # -*- Finish Grid -*- 
+        # -*- Finish Grid -*-
         x = w + W
         y = h
         Y = h + H
-        pic.append(pylatex.TikZDraw([f"({x:.2f}, {y:.2f})", "--", f"({x:.2f}, {Y:.2f})"]))
+        pic.append(pylatex.TikZDraw(
+            [f"({x:.2f}, {y:.2f})", "--", f"({x:.2f}, {Y:.2f})"]))
 
         # -*- Close Hours Section -*-
         x = w
         y = h
         Y = h + H - dy
-        pic.append(pylatex.TikZDraw([f"({x:.2f}, {y:.2f})", "--", f"({x:.2f}, {Y:.2f})"]))
+        pic.append(pylatex.TikZDraw(
+            [f"({x:.2f}, {y:.2f})", "--", f"({x:.2f}, {Y:.2f})"]))
 
         # -*- Horizontal Lines and Hourly Times -*-
         for j in range(1, N + 1):
@@ -347,19 +354,22 @@ class Schedule:
             yy = y + 0.5 * dy
             xy = pylatex.TikZCoordinate(xx, yy)
             pic.append(pylatex.TikZNode(at=xy, text=f"{S+j-1:02d}:00"))
-            pic.append(pylatex.TikZDraw([f"({x:.2f}, {y:.2f})", "--", f"({X:.2f}, {y:.2f})"]))
-        
-        # -*- Finish Grid -*- 
+            pic.append(pylatex.TikZDraw(
+                [f"({x:.2f}, {y:.2f})", "--", f"({X:.2f}, {y:.2f})"]))
+
+        # -*- Finish Grid -*-
         x = w
         X = w + W
         y = h + H - dy
-        pic.append(pylatex.TikZDraw([f"({x:.2f}, {y:.2f})", "--", f"({X:.2f}, {y:.2f})"]))
+        pic.append(pylatex.TikZDraw(
+            [f"({x:.2f}, {y:.2f})", "--", f"({X:.2f}, {y:.2f})"]))
 
         # -*- Close Days Section -*-
         x = w + dx
         X = w + W
         y = h + H
-        pic.append(pylatex.TikZDraw([f"({x:.2f}, {y:.2f})", "--", f"({X:.2f}, {y:.2f})"]))
+        pic.append(pylatex.TikZDraw(
+            [f"({x:.2f}, {y:.2f})", "--", f"({X:.2f}, {y:.2f})"]))
 
         # -*- Place Events -*-
         for root in self.roots:
@@ -372,7 +382,8 @@ class Schedule:
                     Y = h + H - dy * ((root.H - S + root.M / HOUR_MINS) + 1)
                     fill = self.pallete(root.label)
                     # opts = pylatex.TikZOptions(fill=fill)
-                    pic.append(pylatex.NoEscape(f"\\draw [text width={abs(X-x):.2f}cm, align=center, fill={fill}] ({x:.2f}, {y:.2f}) rectangle ({X:.2f}, {Y:.2f}) node[midway] {{{root.label}}};"))
+                    pic.append(pylatex.NoEscape(
+                        f"\\draw [text width={abs(X-x):.2f}cm, align=center, fill={fill}] ({x:.2f}, {y:.2f}) rectangle ({X:.2f}, {Y:.2f}) node[midway] {{{root.label}}};"))
                     # xx = 0.5 * (x + X)
                     # yy = 0.5 * (y + Y)
                     # xy = pylatex.TikZCoordinate(xx, yy)
@@ -381,5 +392,6 @@ class Schedule:
                     root = root._down
                 else:
                     break
+
 
 __all__ = ["Schedule", "Event"]

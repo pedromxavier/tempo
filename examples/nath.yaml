@@ -1,0 +1,58 @@
+config:
+  lang: en
+  title: Week 
+  subtitle: Natália Gomes Correia Cavalcanti
+  logo: ./nath.png
+  # logo-width: 8.0
+  seed: 8
+  bottom: 1.0
+  
+mon:
+  09:00-10:00:
+    FP Writing
+  12:00-13:00:
+    Lunch
+  14:00-15:00:
+    Practice English
+  19:00-20:00:
+    FP Mentory
+
+tue:
+  09:00-10:00:
+    FP Writing
+  12:00-13:00:
+    Lunch
+  14:00-17:00:
+    Pedagogical Planning
+
+wed:
+  09:00-10:00:
+    FP Writing
+  12:00-13:00:
+    Lunch
+  14:00-15:00:
+    Practice English
+  16:00-17:30:
+    Internship 4
+
+thu:
+  09:00-10:00:
+    FP Writing
+  12:00-13:00:
+    Lunch
+  14:00-17:00:
+    FP
+
+fri:
+  08:30-09:30:
+    $\Psi$
+  10:00-11:00:
+    FP Writing
+  12:00-13:00:
+    Lunch
+  14:00-17:00:
+    Pedagogical Planning
+
+# sat:
+
+# sun:
